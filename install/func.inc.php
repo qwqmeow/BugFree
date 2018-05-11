@@ -90,6 +90,7 @@ function checkMysql()
                                     print_r($version);
                                     $version = isset($version[1]) ? $version[1] : $versionInfo;
                                     $test->close();
+                                    $version ='5.6.37';
                                     return version_compare($version, '5.0', '>=');
                     }
 
