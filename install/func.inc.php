@@ -27,7 +27,7 @@ array(
  array(
     t('bugfree', 'MySQL version'),
     ($message = checkMysql()) !== t('bugfree', 'Not Install') && $message,
-    ($message !== t('bugfree', 'Not Install')) ? mysql_get_client_info() : $message,
+    ($message !== t('bugfree', 'Not Install')) ? mysqli_get_client_info() : $message,
     '5.0+'),
  array(
     t('bugfree', '$_SERVER variable'),
@@ -72,15 +72,28 @@ array(
  * 
  * @return boolean $result 检查结果
  */
+// 
+
 function checkMysql()
 {
-    if(function_exists("mysql_get_client_info"))
-    {
-        $versionInfo = mysql_get_client_info();
-        preg_match('/[^\d]*([\d\.]+)[^\d]*/', $versionInfo, $version);
-        $version = isset($version[1]) ? $version[1] : $versionInfo;
-        return version_compare($version, '5.0', '>=');
-    }
+    if(function_exists("mysqli_get_server_info"))
+        {
+
+                    $test = new mysqli("127.0.0.1", "root", "", "mysql");
+                    if(!$test)  {
+                                    echo"database error";
+                    }else{
+                                    echo"php env successful \n";
+                                    $versionInfo = mysqli_get_server_info($test);
+                                    printf("Server version: %s\n", mysqli_get_server_info($test));
+                                    preg_match('/[^\d]*([\d\.]+)[^\d]*/', $versionInfo, $version);
+                                    print_r($version);
+                                    $version = isset($version[1]) ? $version[1] : $versionInfo;
+                                    $test->close();
+                                    return version_compare($version, '5.0', '>=');
+                    }
+
+        }
     return t('bugfree', 'Not Install');
 }
 
